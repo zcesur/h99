@@ -1,4 +1,4 @@
-## Functors
+## [Functors](http://adit.io/posts/2013-04-17-functors,_applicatives,_and_monads_in_pictures.html)
 
 When a value is wrapped in a context, you can't apply a normal function to it:
 
@@ -15,7 +15,7 @@ Just what is a `Functor`, really?
 `Functor` is a typeclass. Here's the definition:
 
 ```haskell
-class Functor (f :: * -> *) where
+class Functor f where
   fmap :: (a -> b) -> f a -> f b
 ```
 
