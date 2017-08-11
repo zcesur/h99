@@ -1,3 +1,4 @@
+import Data.List (nub)
 import System.Random
 import Test.HUnit
 
@@ -59,9 +60,24 @@ rnd_permu xs = do
     idx = fmap (map (subtract 1)) $ diff_select n n
     n = length xs
 
+-- Problem 26
+-- Generate the combinations of K distinct objects chosen from the N elements of a list
+-- In how many ways can a committee of 3 be chosen from a group of 12 people? We all know that there are C(12,3) = 220 possibilities (C(N,K) denotes the well-known binomial coefficients). For pure mathematicians, this result may be great. But we want to really generate all the possibilities in a list.
+combinations :: (Eq a) => Int -> [a] -> [[a]]
+combinations n [] = [[]]
+combinations n xxs@(x:xs)
+    | nub xxs /= xxs  = error "The list does not contain distinct elements."
+    | n <= 0          = [[]]
+    | n > length xxs  = [[]]
+    | n == length xxs = [xxs]
+    | otherwise       = map (x:) (combinations (n-1) xs) ++ combinations n xs
+
+test6 = TestCase $ assertEqual "Problem 26" 220 $ length $ combinations 3 [1..12]
+
 main = do
     let tests = TestList
             [ test1
-            , test2 ]
+            , test2 
+            , test6]
 
     runTestTT tests 
