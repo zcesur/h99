@@ -49,6 +49,16 @@ diff_select n m
         | x `elem` acc = acc
         | otherwise    = x:acc
 
+-- Problem 25
+-- Generate a random permutation of the elements of a list.
+rnd_permu :: [a] -> IO [a]
+rnd_permu xs = do
+    gen <- getStdGen
+    fmap (map (xs !!)) idx
+  where
+    idx = fmap (map (subtract 1)) $ diff_select n n
+    n = length xs
+
 main = do
     let tests = TestList
             [ test1
