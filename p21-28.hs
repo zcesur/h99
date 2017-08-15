@@ -52,6 +52,7 @@ diff_select n m
 
 -- Problem 25
 -- Generate a random permutation of the elements of a list.
+
 rnd_permu :: [a] -> IO [a]
 rnd_permu xs = do
     gen <- getStdGen
@@ -63,6 +64,7 @@ rnd_permu xs = do
 -- Problem 26
 -- Generate the combinations of K distinct objects chosen from the N elements of a list
 -- In how many ways can a committee of 3 be chosen from a group of 12 people? We all know that there are C(12,3) = 220 possibilities (C(N,K) denotes the well-known binomial coefficients). For pure mathematicians, this result may be great. But we want to really generate all the possibilities in a list.
+
 combinations :: (Eq a) => Int -> [a] -> [[a]]
 combinations _ [] = [[]]
 combinations n xxs@(x:xs)
@@ -77,17 +79,22 @@ test6 = TestCase $ assertEqual "Problem 26" 220 $ length $ combinations 3 [1..12
 --Problem 27a
 --Group the elements of a set into disjoint subsets.
 --In how many ways can a group of 9 people work in 3 disjoint subgroups of 2, 3 and 4 persons? Write a function that generates all the possibilities and returns them in a list. 
+
 type People = [Char]
 type Team = [People]
 
-g :: Int -> [Team] -> [Team]
-g _ [] = []
-g n ((p:ps):ts) = map (++ps) (transpose [map (p \\) pts, pts]) ++ g n ts
+rearrange :: Int -> [Team] -> [Team]
+rearrange _ [] = []
+rearrange n ((p:ps):ts)
+    | n > length p  = error "Not enough members."
+    | n == length p = [(p:ps)] ++ rearrange n ts
+    | otherwise     = map (++ps) (splitUp n p) ++ rearrange n ts
   where
-    pts = combinations n p
+    splitUp :: Int -> People -> [Team]
+    splitUp n xs = transpose [map (xs \\) (combinations n xs), combinations n xs]
 
 group3 :: People -> [Team]
-group3 ps = g 4 $ g 3 $ g 2 $ [[ps]]
+group3 xs = rearrange 4 $ rearrange 3 $ rearrange 2 $ [[xs]]
 
 test7a = TestCase $ assertEqual "Problem 27a" 1260 $ length $ group3 ['a'..'i']
 
