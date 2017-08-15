@@ -1,4 +1,4 @@
-import Data.List (nub)
+import Data.List (nub, (\\), transpose)
 import System.Random
 import Test.HUnit
 
@@ -64,7 +64,7 @@ rnd_permu xs = do
 -- Generate the combinations of K distinct objects chosen from the N elements of a list
 -- In how many ways can a committee of 3 be chosen from a group of 12 people? We all know that there are C(12,3) = 220 possibilities (C(N,K) denotes the well-known binomial coefficients). For pure mathematicians, this result may be great. But we want to really generate all the possibilities in a list.
 combinations :: (Eq a) => Int -> [a] -> [[a]]
-combinations n [] = [[]]
+combinations _ [] = [[]]
 combinations n xxs@(x:xs)
     | nub xxs /= xxs  = error "The list does not contain distinct elements."
     | n <= 0          = [[]]
@@ -74,10 +74,28 @@ combinations n xxs@(x:xs)
 
 test6 = TestCase $ assertEqual "Problem 26" 220 $ length $ combinations 3 [1..12]
 
+--Problem 27a
+--Group the elements of a set into disjoint subsets.
+--In how many ways can a group of 9 people work in 3 disjoint subgroups of 2, 3 and 4 persons? Write a function that generates all the possibilities and returns them in a list. 
+type People = [Char]
+type Team = [People]
+
+g :: Int -> [Team] -> [Team]
+g _ [] = []
+g n ((p:ps):ts) = map (++ps) (transpose [map (p \\) pts, pts]) ++ g n ts
+  where
+    pts = combinations n p
+
+group3 :: People -> [Team]
+group3 ps = g 4 $ g 3 $ g 2 $ [[ps]]
+
+test7a = TestCase $ assertEqual "Problem 27a" 1260 $ length $ group3 ['a'..'i']
+
 main = do
     let tests = TestList
             [ test1
             , test2 
-            , test6]
+            , test6 
+            , test7a ]
 
     runTestTT tests 
