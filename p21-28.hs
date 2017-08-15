@@ -91,11 +91,26 @@ group3 ps = g 4 $ g 3 $ g 2 $ [[ps]]
 
 test7a = TestCase $ assertEqual "Problem 27a" 1260 $ length $ group3 ['a'..'i']
 
+--Problem 27b
+--Generalize the above predicate in a way that we can specify a list of group sizes and the predicate will return a list of groups.
+
+group :: [Int] -> People -> [Team]
+group ns xs = groupHelper ns [[xs]]
+  where
+    groupHelper :: [Int] -> [Team] -> [Team]
+    groupHelper [] xs = xs
+    groupHelper (n:ns) xs = groupHelper ns $ rearrange n $ xs
+
+test7b1 = TestCase $ assertEqual "Problem 27b" 1260 $ length $ group [2,3,4] ['a'..'i']
+test7b2 = TestCase $ assertEqual "Problem 27b" 756 $ length $ group [2,2,5] ['a'..'i']
+
 main = do
     let tests = TestList
             [ test1
             , test2 
             , test6 
-            , test7a ]
+            , test7a
+            , test7b1
+            , test7b2 ]
 
     runTestTT tests 
