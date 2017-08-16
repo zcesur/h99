@@ -122,19 +122,29 @@ lsort (x:xs) = lsort smaller ++ [x] ++ lsort larger
     smaller = [e | e <- xs, length e < length x]
     larger = [e | e <- xs, length e >= length x]
 
-test8 = TestCase $ assertEqual "Problem 28" ["o"
-                                            ,"de"
-                                            ,"de"
-                                            ,"mn"
-                                            ,"abc"
-                                            ,"fgh"
-                                            ,"ijkl"] $ lsort ["abc"
-                                                             ,"de"
-                                                             ,"fgh"
-                                                             ,"de"
-                                                             ,"ijkl"
-                                                             ,"mn"
-                                                             ,"o"]
+test8a = TestCase $ assertEqual "Problem 28a" expected actual
+  where
+    expected = ["o","de","de","mn","abc","fgh","ijkl"]
+    actual = lsort ["abc","de","fgh","de","ijkl","mn","o"]
+
+--Problem 28b
+--Again, we suppose that a list contains elements that are lists themselves. But this time the objective is to sort the elements of this list according to their length frequency; i.e., in the default, where sorting is done ascendingly, lists with rare lengths are placed first, others with a more frequent length come later.
+
+splitByLen :: [[a]] -> [[[a]]]
+splitByLen xs = foldl f [] xs
+  where
+    f [] x = [[x]]
+    f (a:as) x
+        | length (head a) == length x = (x:a):as
+        | otherwise                   = [x]:(a:as)
+
+lfsort :: [[a]] -> [[a]]
+lfsort xs = concat $ lsort $ splitByLen $ lsort xs
+
+test8b = TestCase $ assertEqual "Problem 28b" expected actual
+  where
+    expected = ["ijkl","o","fgh","abc","mn","de","de"]
+    actual = lfsort ["abc", "de", "fgh", "de", "ijkl", "mn", "o"]
 
 main = do
     let tests = TestList
@@ -144,6 +154,7 @@ main = do
             , test7a
             , test7b1
             , test7b2
-            , test8 ]
+            , test8a
+            , test8b ]
 
     runTestTT tests 
