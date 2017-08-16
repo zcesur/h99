@@ -111,6 +111,31 @@ group ns xs = groupHelper ns [[xs]]
 test7b1 = TestCase $ assertEqual "Problem 27b" 1260 $ length $ group [2,3,4] ['a'..'i']
 test7b2 = TestCase $ assertEqual "Problem 27b" 756 $ length $ group [2,2,5] ['a'..'i']
 
+--Problem 28a
+--Sorting a list of lists according to length of sublists
+--We suppose that a list contains elements that are lists themselves. The objective is to sort the elements of this list according to their length. E.g. short lists first, longer lists later, or vice versa.
+
+lsort :: [[a]] -> [[a]]
+lsort [] = []
+lsort (x:xs) = lsort smaller ++ [x] ++ lsort larger
+  where
+    smaller = [e | e <- xs, length e < length x]
+    larger = [e | e <- xs, length e >= length x]
+
+test8 = TestCase $ assertEqual "Problem 28" ["o"
+                                            ,"de"
+                                            ,"de"
+                                            ,"mn"
+                                            ,"abc"
+                                            ,"fgh"
+                                            ,"ijkl"] $ lsort ["abc"
+                                                             ,"de"
+                                                             ,"fgh"
+                                                             ,"de"
+                                                             ,"ijkl"
+                                                             ,"mn"
+                                                             ,"o"]
+
 main = do
     let tests = TestList
             [ test1
@@ -118,6 +143,7 @@ main = do
             , test6 
             , test7a
             , test7b1
-            , test7b2 ]
+            , test7b2
+            , test8 ]
 
     runTestTT tests 
