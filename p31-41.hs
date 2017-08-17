@@ -58,8 +58,10 @@ test4 = TestCase $ assertEqual "Problem 34" 4 $ totient 10
 -- Determine the prime factors of a given positive integer. Construct a flat list containing the prime factors in ascending order.
 
 primeFactors :: Int -> [Int]
-primeFactors 1 = []
-primeFactors n = p : primeFactors (n `div` p)
+primeFactors n
+    | n <= 0    = undefined
+    | n == 1    = []
+    | otherwise = p : primeFactors (n `div` p)
   where
     p = smPrimeFacGT 1 n
     smPrimeFacGT :: Int -> Int -> Int
@@ -80,6 +82,28 @@ test6 = TestCase $ assertEqual "Problem 36" expected actual
     expected = [(3,2),(5,1),(7,1)]
     actual = prime_factors_mult 315
 
+-- Problem 37
+-- Calculate Euler's totient function phi(m) (improved).
+-- See problem 34 for the definition of Euler's totient function. If the list of the prime factors of a number m is known in the form of problem 36 then the function phi(m) can be efficiently calculated as follows: Let ((p1 m1) (p2 m2) (p3 m3) ...) be the list of prime factors (and their multiplicities) of a given number m. Then phi(m) can be calculated with the following formula:
+-- phi(m) = (p1 - 1) * p1 ** (m1 - 1) * 
+--          (p2 - 1) * p2 ** (m2 - 1) * 
+--          (p3 - 1) * p3 ** (m3 - 1) * ...
+-- Note that a ** b stands for the b'th power of a. 
+
+phi :: Int -> Int
+phi = product . map (\(p,m) -> (p-1) * p ^ (m-1)) . prime_factors_mult
+
+test7 = TestCase $ assertEqual "Problem 37" 4 $ phi 10
+
+-- Problem 39
+-- A list of prime numbers.
+-- Given a range of integers by its lower and upper limit, construct a list of all prime numbers in that range.
+
+primesR :: Int -> Int -> [Int]
+primesR a b = filter isPrime [a..b]
+
+test9 = TestCase $ assertEqual "Problem 39" [11,13,17,19] $ primesR 10 20
+
 main = do
     let tests = TestList
             [ test1a 
@@ -88,6 +112,8 @@ main = do
             , test3
             , test4
             , test5
-            , test6 ]
+            , test6
+            , test7
+            , test9 ]
 
     runTestTT tests 
