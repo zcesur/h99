@@ -16,12 +16,12 @@ isPrime n
 test1a = TestCase $ assertEqual "Problem 31" expected actual
   where
     expected = True
-    actual = foldl1 (&&) $ map isPrime [2,3,5,7,11,13,17,19]
+    actual = and $ map isPrime [2,3,5,7,11,13,17,19]
 
 test1b = TestCase $ assertEqual "Problem 31" expected actual
   where
     expected = False
-    actual = foldl1 (||) $ map isPrime [(-2),(-1),0,1,4,6,8,9]
+    actual = or $ map isPrime [(-2),(-1),0,1,4,6,8,9]
 
 -- Problem 32
 -- Determine the greatest common divisor of two positive integer numbers. Use Euclid's algorithm.
