@@ -87,9 +87,41 @@ test2 = TestCase $ assertEqual "Problem 47" expected actual
                        ,"False False False"]
     actual = tablePure (\a b -> a `and'` (a `or'` not' b))
 
+-- Problem 48
+
+-- Truth tables for logical expressions (3).
+
+-- Generalize problem P47 in such a way that the logical expression may contain
+-- any number of logical variables. Define table/2 in a way that
+-- table(List,Expr) prints the truth table for the expression Expr, which
+-- contains the logical variables enumerated in List.
+
+tablePure' :: Int -> ([Bool] -> Bool) -> String
+tablePure' n f = 
+    unlines $
+    map (\x -> intercalate " " (map show (x ++ [f x]))) $
+    sequence $ replicate n [True, False]
+     
+table' :: Int -> ([Bool] -> Bool) -> IO ()
+table' n f = putStrLn $ tablePure' n f
+
+test3 = TestCase $ assertEqual "Problem 48" expected actual
+  where
+    expected = unlines ["True True True True"
+                       ,"True True False True"
+                       ,"True False True True"
+                       ,"True False False False"
+                       ,"False True True False"
+                       ,"False True False False"
+                       ,"False False True False"
+                       ,"False False False False"]
+    actual = tablePure' 3 (\[a,b,c] ->
+        a `and'` (b `or'` c) `equ'` a `and'` b `or'` a `and'` c)
+
 main = do
     let tests = TestList
             [ test1
-            , test2 ]
+            , test2
+            , test3 ]
 
     runTestTT tests 
