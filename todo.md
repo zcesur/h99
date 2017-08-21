@@ -1,1 +1,0 @@
-- Understand how [`Applicative`](https://en.wikibooks.org/wiki/Haskell/Applicative_functors) and [`sequence`](http://derekwyatt.org/2012/01/25/haskell-sequence-over-functions-explained/) works
