@@ -18,9 +18,12 @@ getVal :: Tree a -> a
 getVal Empty = undefined
 getVal (Node x _ _) = x
 
+nextLevel :: Tree a -> [Tree a]
+nextLevel Empty = []
+nextLevel (Node _ l r) = [l,r]
+
 children :: Tree a -> [Tree a]
-children Empty = []
-children (Node _ l r) = filter (not . isEmpty) [l,r]
+children x = filter (not . isEmpty) $ nextLevel x
 
 leaf :: a -> Tree a
 leaf x = Node x Empty Empty
@@ -39,7 +42,7 @@ postorder (Node x left right) = postorder left ++ postorder right ++ [x]
 
 levelorder :: Tree a -> [a]
 levelorder Empty = []
-levelorder x = lo [x]
+levelorder x = levelorder' [x]
   where
-    lo [] = []
-    lo xs = map getVal xs ++ lo (concatMap children xs)
+    levelorder' [] = []
+    levelorder' xs = map getVal xs ++ levelorder' (concatMap children xs)
