@@ -118,10 +118,39 @@ test3 = TestCase $ assertEqual "Problem 48" expected actual
     actual = tablePure' 3 (\[a,b,c] ->
         a `and'` (b `or'` c) `equ'` a `and'` b `or'` a `and'` c)
 
+-- Problem 49
+
+-- Gray codes.
+
+-- An n-bit Gray code is a sequence of n-bit strings constructed according to
+-- certain rules. For example,
+
+-- n = 1: C(1) = ['0','1'].
+-- n = 2: C(2) = ['00','01','11','10'].
+-- n = 3: C(3) = ['000','001','011','010',´110´,´111´,´101´,´100´].
+
+-- Find out the construction rules and write a predicate with the following
+-- specification:
+
+-- % gray(N,C) :- C is the N-bit Gray code
+
+-- Can you apply the method of "result caching" in order to make the predicate
+-- more efficient, when it is to be used repeatedly?
+
+gray :: Int -> [String]
+gray 1 = ["0", "1"]
+gray n = let xs = gray (n-1) in map ('0':) xs ++ map ('1':) (reverse xs)
+
+test4 = TestCase $ assertEqual "Problem 49" expected actual
+  where
+    expected = ["000","001","011","010","110","111","101","100"]
+    actual = gray 3
+
 main = do
     let tests = TestList
             [ test1
             , test2
-            , test3 ]
+            , test3
+            , test4 ]
 
     runTestTT tests 
