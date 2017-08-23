@@ -1,4 +1,5 @@
-import Test.HUnit (assertEqual, runTestTT, Test(..))
+module Problems46thru50 where
+
 import Data.List (intercalate)
 
 -- Problem 46
@@ -48,14 +49,6 @@ tablePure f =
 table :: (Bool -> Bool -> Bool) -> IO ()
 table f = putStrLn $ tablePure f
 
-test1 = TestCase $ assertEqual "Problem 46" expected actual
-  where
-    expected = unlines ["True True True"
-                       ,"True False True"
-                       ,"False True False"
-                       ,"False False False"]
-    actual = tablePure (\a b -> (and' a (or' a b)))
-
 -- Problem 47
 --
 -- Truth tables for logical expressions (2).
@@ -79,14 +72,6 @@ infixr 2 `nor'`
 infix 4 `xor'`
 infixr 2 `impl'`
 
-test2 = TestCase $ assertEqual "Problem 47" expected actual
-  where
-    expected = unlines ["True True True"
-                       ,"True False True"
-                       ,"False True False"
-                       ,"False False False"]
-    actual = tablePure (\a b -> a `and'` (a `or'` not' b))
-
 -- Problem 48
 
 -- Truth tables for logical expressions (3).
@@ -104,19 +89,6 @@ tablePure' n f =
      
 table' :: Int -> ([Bool] -> Bool) -> IO ()
 table' n f = putStrLn $ tablePure' n f
-
-test3 = TestCase $ assertEqual "Problem 48" expected actual
-  where
-    expected = unlines ["True True True True"
-                       ,"True True False True"
-                       ,"True False True True"
-                       ,"True False False False"
-                       ,"False True True False"
-                       ,"False True False False"
-                       ,"False False True False"
-                       ,"False False False False"]
-    actual = tablePure' 3 (\[a,b,c] ->
-        a `and'` (b `or'` c) `equ'` a `and'` b `or'` a `and'` c)
 
 -- Problem 49
 
@@ -140,17 +112,3 @@ test3 = TestCase $ assertEqual "Problem 48" expected actual
 gray :: Int -> [String]
 gray 1 = ["0", "1"]
 gray n = let xs = gray (n-1) in map ('0':) xs ++ map ('1':) (reverse xs)
-
-test4 = TestCase $ assertEqual "Problem 49" expected actual
-  where
-    expected = ["000","001","011","010","110","111","101","100"]
-    actual = gray 3
-
-main = do
-    let tests = TestList
-            [ test1
-            , test2
-            , test3
-            , test4 ]
-
-    runTestTT tests 
