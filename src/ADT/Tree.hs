@@ -1,48 +1,76 @@
 module ADT.Tree
 ( Tree(..)
 , leaf
+, left
+, right
+, height
+, balanced
 , preorder
 , inorder
 , postorder
 , levelorder
+, printT
 ) where
 
-data Tree a = Empty | Node a (Tree a) (Tree a)
-              deriving (Show, Eq)
+data Tree a = Nil | Node (Tree a) a (Tree a) deriving (Show, Eq)
 
-isEmpty :: Tree a -> Bool
-isEmpty Empty = True
-isEmpty _ = False
+empty :: Tree a -> Bool
+empty Nil = True
+empty _ = False
 
-getVal :: Tree a -> a
-getVal Empty = undefined
-getVal (Node x _ _) = x
+val :: Tree a -> a
+val Nil = undefined
+val (Node _ x _) = x
 
-nextLevel :: Tree a -> [Tree a]
-nextLevel Empty = []
-nextLevel (Node _ l r) = [l,r]
+left :: Tree a -> Tree a
+left Nil = undefined
+left (Node l _ _) = l
+
+right :: Tree a -> Tree a
+right Nil = undefined
+right (Node _ _ r) = r
 
 children :: Tree a -> [Tree a]
-children x = filter (not . isEmpty) $ nextLevel x
+children Nil = []
+children (Node l _ r) = filter (not . empty) [l, r]
 
 leaf :: a -> Tree a
-leaf x = Node x Empty Empty
+leaf x = Node Nil x Nil
+
+height :: Tree a -> Int
+height Nil = -1
+height (Node l _ r) = 1 + max (height l) (height r)
+
+balanced :: Tree a -> Bool
+balanced Nil = True
+balanced (Node l _ r) = abs (height l - height r) <= 1 &&
+                        balanced l &&
+                        balanced r
 
 preorder :: Tree a -> [a]
-preorder Empty = []
-preorder (Node x left right) = x : (preorder left) ++ (preorder right)
+preorder Nil = []
+preorder (Node l x r) = [x] ++ preorder l ++ preorder r
 
 inorder :: Tree a -> [a]
-inorder Empty = []
-inorder (Node x left right) = inorder left ++ [x] ++ inorder right
+inorder Nil = []
+inorder (Node l x r) = inorder l ++ [x] ++ inorder r
 
 postorder :: Tree a -> [a]
-postorder Empty = []
-postorder (Node x left right) = postorder left ++ postorder right ++ [x]
+postorder Nil = []
+postorder (Node l x r) = postorder l ++ postorder r ++ [x]
 
 levelorder :: Tree a -> [a]
-levelorder Empty = []
-levelorder x = levelorder' [x]
+levelorder Nil = []
+levelorder t = go [t]
   where
-    levelorder' [] = []
-    levelorder' xs = map getVal xs ++ levelorder' (concatMap children xs)
+    go [] = []
+    go ts = map val ts ++ go (concatMap children ts)
+
+printT :: Show a => Tree a -> IO ()
+printT (Node l x r) = go "" (Node l x r)
+  where
+    go _ Nil = return ()
+    go padding (Node l x r) = do
+       putStrLn $ padding ++ show x
+       go ("  " ++ padding) l
+       go ("  " ++ padding) r

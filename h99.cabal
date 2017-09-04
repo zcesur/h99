@@ -48,12 +48,14 @@ cabal-version:       >=1.10
 
 library
   -- Modules exported by the library.
-  exposed-modules:     ADT.Tree,
-                       Problems01thru10,
-                       Problems11thru20,
-                       Problems21thru28,
-                       Problems31thru41,
-                       Problems46thru50
+  exposed-modules:     ADT.Tree
+                      ,Util
+                      ,Problems01thru10
+                      ,Problems11thru20
+                      ,Problems21thru28
+                      ,Problems31thru41
+                      ,Problems46thru50
+                      ,Problems54Athru60
   
   -- Modules included in this library but not exported.
   -- other-modules:       

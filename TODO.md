@@ -1,4 +1,0 @@
-- Learn more about
-  - [`Applicative`](https://en.wikibooks.org/wiki/Haskell/Applicative_functors)
-  - [`sequence`](http://derekwyatt.org/2012/01/25/haskell-sequence-over-functions-explained/) 
-  - [`Foldable & Traversable`](https://wiki.haskell.org/Foldable_and_Traversable)
