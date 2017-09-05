@@ -10,7 +10,7 @@
 - [Questions 31 to 41](https://wiki.haskell.org/99_questions/31_to_41): Arithmetic. [Solutions](./src/Problems31thru41.hs)
 - [Questions 46 to 50](https://wiki.haskell.org/99_questions/46_to_50): Logic and codes. [Solutions](./src/Problems46thru50.hs) (1 problem missing)
 - [Questions 54A to 60](https://wiki.haskell.org/99_questions/54A_to_60): Binary trees. [Solutions](./src/Problems54Athru60.hs) (1 problem missing)
-- [Questions 61 to 69](https://wiki.haskell.org/99_questions/61_to_69): Binary trees, continued.
+- [Questions 61 to 69](https://wiki.haskell.org/99_questions/61_to_69): Binary trees, continued. [Solutions](./src/Problems61thru69.hs) (7 problems missing)
 - [Questions 70B to 73](https://wiki.haskell.org/99_questions/70B_to_73): Multiway trees.
 - [Questions 80 to 89](https://wiki.haskell.org/99_questions/80_to_89): Graphs.
 - [Questions 90 to 94](https://wiki.haskell.org/99_questions/90_to_94): Miscellaneous problems.
