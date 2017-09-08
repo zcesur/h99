@@ -57,6 +57,7 @@ library
                       ,Problems46thru50
                       ,Problems54Athru60
                       ,Problems61thru69
+                      ,Problems80thru89
   
   -- Modules included in this library but not exported.
   -- other-modules:       
