@@ -49,15 +49,16 @@ cabal-version:       >=1.10
 library
   -- Modules exported by the library.
   exposed-modules:     ADT.Tree
-                      ,Util
-                      ,Problems01thru10
-                      ,Problems11thru20
-                      ,Problems21thru28
-                      ,Problems31thru41
-                      ,Problems46thru50
-                      ,Problems54Athru60
-                      ,Problems61thru69
-                      ,Problems80thru89
+                     , Util
+                     , Problems01thru10
+                     , Problems11thru20
+                     , Problems21thru28
+                     , Problems31thru41
+                     , Problems46thru50
+                     , Problems54Athru60
+                     , Problems61thru69
+                     , Problems80thru89
+                     , Problems90thru94
   
   -- Modules included in this library but not exported.
   -- other-modules:       
@@ -66,8 +67,8 @@ library
   -- other-extensions:    
   
   -- Other library packages from which modules are imported.
-  build-depends:       base,
-                       random
+  build-depends:       base
+                     , random
   
   -- Directories containing source files.
   hs-source-dirs:      src
