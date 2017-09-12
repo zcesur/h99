@@ -69,6 +69,7 @@ library
   -- Other library packages from which modules are imported.
   build-depends:       base
                      , random
+                     , fgl
   
   -- Directories containing source files.
   hs-source-dirs:      src

@@ -1,6 +1,9 @@
 module Problems80thru89 where
 
-import Data.List
+import           Data.List (sort, nub, nubBy)
+
+import qualified Data.Graph.Inductive as Graph
+import           Data.Graph.Inductive (Gr, (&), match)
 
 -- Problem 80
 -- 
@@ -13,23 +16,23 @@ import Data.List
 -- difficult, but because it's a lot of work to deal with all the special
 -- cases.
 
-data Graph a = Graph [a] [(a, a)] deriving (Eq, Show)
+data Graph' a = Graph' [a] [(a, a)] deriving (Eq, Show)
 data Adjacency a = Adjacency [(a, [a])] deriving (Eq, Show)
 data Friendly a = Friendly [(a, a)] deriving (Eq, Show)
 
-graphToAdj :: Eq a => Graph a -> Adjacency a
-graphToAdj (Graph xs ys) = Adjacency (go xs ys)
+graphToAdj :: Eq a => Graph' a -> Adjacency a
+graphToAdj (Graph' xs ys) = Adjacency (go xs ys)
   where
     go [] ys = []
     go (x:xs) ys = (x, ys >>= (adjacent x)) : go xs ys
 
-graphToFri :: Eq a => Graph a -> Friendly a
-graphToFri (Graph xs ys) = Friendly (go xs ys)
+graphToFri :: Eq a => Graph' a -> Friendly a
+graphToFri (Graph' xs ys) = Friendly (go xs ys)
   where
     go xs ys = ys ++ map (\x -> (x, x)) (filter (isolated ys) xs)
 
-adjToGraph :: (Eq a, Ord a) => Adjacency a -> Graph a
-adjToGraph (Adjacency xs) = Graph (nodes xs) (edges xs)
+adjToGraph :: (Eq a, Ord a) => Adjacency a -> Graph' a
+adjToGraph (Adjacency xs) = Graph' (nodes xs) (edges xs)
   where
     nodes = sort . map fst
     edges = sort 
@@ -44,8 +47,8 @@ adjToFri (Adjacency xs) = Friendly (go xs)
         [] -> (fst x, fst x) : go xs
         _  -> zipWith (,) (repeat (fst x)) (snd x) ++ go xs
 
-friToGraph :: (Eq a, Ord a) => Friendly a -> Graph a
-friToGraph (Friendly xs) = Graph (nodes xs) (edges xs)
+friToGraph :: (Eq a, Ord a) => Friendly a -> Graph' a
+friToGraph (Friendly xs) = Graph' (nodes xs) (edges xs)
   where
     nodes = sort . nub . concatMap (\(x, y) -> [x, y])
     edges = sort . nubBy edgesEqual . filter (\(x, y) -> x /= y)
@@ -69,3 +72,28 @@ adjacent x (a, b)
 -- | Given some edges and a node, determine whether the node is isolated.
 isolated :: Eq a => [(a, a)] -> a -> Bool
 isolated ys x = null $ ys >>= adjacent x
+
+-- | Problem 81
+-- 
+-- (**) Path from one node to another one
+-- 
+-- Write a function that, given two nodes a and b in a graph, returns all the
+-- acyclic paths from a to b.
+paths :: Int -> Int -> [(Int, Int)] -> [[Int]]
+paths start end edges = go start end $ fromList edges
+  where
+    go :: Graph.Node -> Graph.Node -> Gr n e -> [[Graph.Node]]
+    go start end g
+        | Graph.isEmpty g = []
+        | start == end    = [[end]]
+    go start end g = case match start g of
+        (Just c,  g) -> [start:path | s <- Graph.suc' c, path <- go s end g]
+        (Nothing, _) -> []
+
+-- | Construct an inductive graph with unlabeled nodes and edges with the
+-- given list of edges.
+fromList :: [(Int, Int)] -> Gr () ()
+fromList es = Graph.mkGraph vs es'
+  where
+    es' = zipWith (\(x,y) z -> (x,y,z)) es (repeat ())
+    vs  = zip (nub $ sort $ foldl (\acc (x,y) -> x:y:acc) [] es) (repeat ())
