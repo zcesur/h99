@@ -1,7 +1,12 @@
 module Problems80thru89Spec where
 
-import Problems80thru89
-import Test.Hspec
+import           Problems80thru89
+import           Test.Hspec
+
+import           Data.List (sort)
+import qualified Data.Graph.Inductive as Graph
+import           Data.Graph.Inductive (Gr, Node, Edge, LEdge)
+
 
 spec :: Spec
 spec = do
@@ -39,3 +44,11 @@ spec = do
       cycles 2 g `shouldBe` [[2,3,4,2]]
       cycles 1 g `shouldBe` []
       cycles 1 g' `shouldBe` [[1,2,3,1],[1,2,3,4,1],[1,3,1],[1,3,4,1]]
+
+  describe "Solution 84" $ do
+    it "can construct the MST" $ do
+      let edges = [(1,2,12),(1,3,34),(1,5,78),(2,4,55)
+                  ,(2,5,32),(3,4,61),(3,5,44),(4,5,93)]
+          nodes = zip [1,2,3,4,5] ['A'..]
+          g = Graph.mkGraph nodes edges
+      sort (prim g) `shouldBe` [(1,2,12),(1,3,34),(2,4,55),(2,5,32)]

@@ -1,9 +1,14 @@
+{-# LANGUAGE ViewPatterns #-}
+
 module Problems80thru89 where
 
 import           Data.List (sort, nub, nubBy)
 
 import qualified Data.Graph.Inductive as Graph
-import           Data.Graph.Inductive (Gr, (&), match)
+import           Data.Graph.Inductive (Gr, Node, Edge, LEdge, match, matchAny)
+
+import qualified Data.Heap            as Heap
+import           Data.Heap            (MinPrioHeap)
 
 -- Problem 80
 -- 
@@ -82,7 +87,7 @@ isolated ys x = null $ ys >>= adjacent x
 paths :: Int -> Int -> [(Int, Int)] -> [[Int]]
 paths start end edges = go start end $ fromList edges
   where
-    go :: Graph.Node -> Graph.Node -> Gr n e -> [[Graph.Node]]
+    go :: Node -> Node -> Gr n e -> [[Node]]
     go cur end g
         | Graph.isEmpty g = []
         | cur == end      = [[end]]
@@ -112,7 +117,7 @@ cycles start edges = [start:path | s <- outs, path <- go s start g]
     g = fromList edges
     outs = outNeighbors start g
 
-    go :: Graph.Node -> Graph.Node -> Gr n e -> [[Graph.Node]]
+    go :: Node -> Node -> Gr n e -> [[Node]]
     go cur end g
         | Graph.isEmpty g = []
         | cur == end      = [[end]]
@@ -120,11 +125,38 @@ cycles start edges = [start:path | s <- outs, path <- go s start g]
         (Just c,  g) -> [cur:path | s <- Graph.suc' c, path <- go s end g]
         (Nothing, _) -> []
 
-outNeighbors :: Graph.Node -> Gr n e -> [Graph.Node]
+outNeighbors :: Node -> Gr n e -> [Node]
 outNeighbors n g = case match n g of
     (Just (_, _, _, out), _) -> map snd out
     _                        -> []
 
-g = [(1,2),(2,3),(1,3),(3,4),(4,2),(5,6),(3,1),(4,1)] :: [(Int,Int)]
-g' = fromList [(1,2),(2,3),(1,3),(3,4),(4,2),(5,6)]
+-- Problem 84
+-- 
+-- (**) Construct the minimal spanning tree
+-- 
+-- Write a predicate ms_tree(Graph,Tree,Sum) to construct the minimal
+-- spanning tree of a given labelled graph. Hint: Use the algorithm of Prim.
+-- A small modification of the solution of P83 does the trick.
 
+prim :: Gr a Int -> [(Int,Int,Int)]
+prim g | Graph.isEmpty g = []
+prim (matchAny -> (c, g')) = go e' g' heap'
+  where
+    go :: LEdge Int -> Gr a Int -> MinPrioHeap Int Edge -> [(Int,Int,Int)]
+    go e g h | Graph.size g == 0 = [e]
+             | otherwise         = e : go e'' g' h''
+             where (_, t, _) = e
+                   (Just c, g') = match t g
+                   h' = foldr Heap.insert h $ map toPrioPair $ Graph.out g t 
+                   Just (e', h'') = Heap.view h'
+                   e'' = fromPrioPair e'
+
+    heap = Heap.fromList $ map toPrioPair $ Graph.out' c :: MinPrioHeap Int Edge
+    Just (e, heap') = Heap.view heap
+    e' = fromPrioPair e
+
+    toPrioPair :: (Int,Int,Int) -> (Int, (Int,Int))
+    toPrioPair (x,y,z) = (z, (x,y))
+
+    fromPrioPair :: (Int, (Int,Int)) -> (Int,Int,Int)
+    fromPrioPair (z, (x,y)) = (x,y,z)

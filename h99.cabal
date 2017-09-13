@@ -70,6 +70,7 @@ library
   build-depends:       base
                      , random
                      , fgl
+                     , heap
   
   -- Directories containing source files.
   hs-source-dirs:      src
@@ -81,5 +82,5 @@ test-suite unit-tests
   type:                exitcode-stdio-1.0
   main-is:             Spec.hs
   hs-source-dirs:      tests
-  build-depends:       base, h99, hspec, hspec-discover
+  build-depends:       base, h99, hspec, hspec-discover, fgl
   default-language:    Haskell2010
