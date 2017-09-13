@@ -83,11 +83,11 @@ paths :: Int -> Int -> [(Int, Int)] -> [[Int]]
 paths start end edges = go start end $ fromList edges
   where
     go :: Graph.Node -> Graph.Node -> Gr n e -> [[Graph.Node]]
-    go start end g
+    go cur end g
         | Graph.isEmpty g = []
-        | start == end    = [[end]]
-    go start end g = case match start g of
-        (Just c,  g) -> [start:path | s <- Graph.suc' c, path <- go s end g]
+        | cur == end      = [[end]]
+    go cur end g = case match cur g of
+        (Just c,  g) -> [cur:path | s <- Graph.suc' c, path <- go s end g]
         (Nothing, _) -> []
 
 -- | Construct an inductive graph with unlabeled nodes and edges with the
@@ -97,3 +97,34 @@ fromList es = Graph.mkGraph vs es'
   where
     es' = zipWith (\(x,y) z -> (x,y,z)) es (repeat ())
     vs  = zip (nub $ sort $ foldl (\acc (x,y) -> x:y:acc) [] es) (repeat ())
+
+-- Problem 82
+-- 
+-- (*) Cycle from a given node
+-- 
+-- Write a predicate cycle(G,A,P) to find a closed path (cycle) P starting at
+-- a given node A in the graph G. The predicate should return all cycles via
+-- backtracking.
+
+cycles :: Int -> [(Int, Int)] -> [[Int]]
+cycles start edges = [start:path | s <- outs, path <- go s start g]
+  where
+    g = fromList edges
+    outs = outNeighbors start g
+
+    go :: Graph.Node -> Graph.Node -> Gr n e -> [[Graph.Node]]
+    go cur end g
+        | Graph.isEmpty g = []
+        | cur == end      = [[end]]
+    go cur end g = case match cur g of
+        (Just c,  g) -> [cur:path | s <- Graph.suc' c, path <- go s end g]
+        (Nothing, _) -> []
+
+outNeighbors :: Graph.Node -> Gr n e -> [Graph.Node]
+outNeighbors n g = case match n g of
+    (Just (_, _, _, out), _) -> map snd out
+    _                        -> []
+
+g = [(1,2),(2,3),(1,3),(3,4),(4,2),(5,6),(3,1),(4,1)] :: [(Int,Int)]
+g' = fromList [(1,2),(2,3),(1,3),(3,4),(4,2),(5,6)]
+

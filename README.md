@@ -12,6 +12,6 @@
 - [Questions 54A to 60](https://wiki.haskell.org/99_questions/54A_to_60): Binary trees. [Solutions](./src/Problems54Athru60.hs) (1 problem missing)
 - [Questions 61 to 69](https://wiki.haskell.org/99_questions/61_to_69): Binary trees, continued. [Solutions](./src/Problems61thru69.hs) (7 problems missing)
 - [Questions 70B to 73](https://wiki.haskell.org/99_questions/70B_to_73): Multiway trees.
-- [Questions 80 to 89](https://wiki.haskell.org/99_questions/80_to_89): Graphs. [Solutions](./src/Problems80thru89.hs) (8 problems missing)
+- [Questions 80 to 89](https://wiki.haskell.org/99_questions/80_to_89): Graphs. [Solutions](./src/Problems80thru89.hs) (7 problems missing)
 - [Questions 90 to 94](https://wiki.haskell.org/99_questions/90_to_94): Miscellaneous problems. [Solutions](./src/Problems90thru94.hs) (4 problems missing)
 - [Questions 95 to 99](https://wiki.haskell.org/99_questions/95_to_99): Miscellaneous problems, continued.

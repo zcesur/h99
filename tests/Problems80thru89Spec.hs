@@ -25,7 +25,17 @@ spec = do
       friToGraph (graphToFri graph) `shouldBe` graph
       friToAdj (adjToFri adj) `shouldBe` adj
 
+  describe "Solution 81" $ do
     it "can return all acyclic paths from a to b" $ do
       let g = [(1,2),(2,3),(1,3),(3,4),(4,2),(5,6)]
       paths 1 4 g `shouldBe` [[1,2,3,4],[1,3,4]]
       paths 2 6 g `shouldBe` []
+  
+  describe "Solution 82" $ do
+    it "can return all cycles from a given node" $ do
+      let g  = [(1,2),(2,3),(1,3),(3,4),(4,2),(5,6)]
+          g' = g ++ [(3,1),(4,1)]
+
+      cycles 2 g `shouldBe` [[2,3,4,2]]
+      cycles 1 g `shouldBe` []
+      cycles 1 g' `shouldBe` [[1,2,3,1],[1,2,3,4,1],[1,3,1],[1,3,4,1]]
